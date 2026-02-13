@@ -20,7 +20,8 @@ import {
   ChevronRight,
   ThumbsUp,
   ThumbsDown,
-  BookOpen
+  BookOpen,
+  Lock
 } from 'lucide-react';
 
 type ProxyType = 'SOCKS5' | 'MTProto';
@@ -32,9 +33,12 @@ interface ProxyServer {
   countryCode: string;
   type: ProxyType;
   secret?: string; // For MTProto
-  ping: number; // ms
+  username?: string; // For SOCKS5 Auth
+  password?: string; // For SOCKS5 Auth
+  ping: number; // ms (internal use for sorting, not displayed)
   status: 'online' | 'offline';
   lastChecked: number; // timestamp
+  serverLabel?: string; // e.g. "Server #1"
 }
 
 interface BypassMethod {
@@ -52,96 +56,69 @@ interface BypassMethod {
 // --- Data ---
 
 const RAW_PROXIES: ProxyServer[] = [
-  // Ireland (MTProto)
-  { ip: 'www.humaontop.space', port: 443, country: 'Ирландия', countryCode: 'IE', type: 'MTProto', secret: '3XnnAQIAAQAH8AMDhuJMOt0', ping: 45, status: 'online', lastChecked: Date.now() },
-  
-  // Sweden (New)
-  { ip: '193.232.178.37', port: 1080, country: 'Швеция', countryCode: 'SE', type: 'SOCKS5', ping: 25, status: 'online', lastChecked: Date.now() },
-  
-  // Finland
-  { ip: '46.20.106.102', port: 1080, country: 'Финляндия', countryCode: 'FI', type: 'SOCKS5', ping: 28, status: 'online', lastChecked: Date.now() },
-  
-  // Russia
-  { ip: '194.28.162.12', port: 1080, country: 'Россия', countryCode: 'RU', type: 'SOCKS5', ping: 15, status: 'online', lastChecked: Date.now() },
-  { ip: '37.200.67.75', port: 1080, country: 'Россия', countryCode: 'RU', type: 'SOCKS5', ping: 18, status: 'online', lastChecked: Date.now() },
-  { ip: '93.171.58.169', port: 1080, country: 'Россия', countryCode: 'RU', type: 'SOCKS5', ping: 22, status: 'online', lastChecked: Date.now() },
-  { ip: '185.106.105.10', port: 1080, country: 'Россия', countryCode: 'RU', type: 'SOCKS5', ping: 19, status: 'online', lastChecked: Date.now() },
-  { ip: '185.61.246.57', port: 1080, country: 'Россия', countryCode: 'RU', type: 'SOCKS5', ping: 21, status: 'online', lastChecked: Date.now() },
-  { ip: '87.117.11.57', port: 1080, country: 'Россия', countryCode: 'RU', type: 'SOCKS5', ping: 25, status: 'online', lastChecked: Date.now() },
-  { ip: '31.43.194.184', port: 1080, country: 'Россия', countryCode: 'RU', type: 'SOCKS5', ping: 20, status: 'online', lastChecked: Date.now() },
+  // --- Netherlands (Low Ping) ---
+  { 
+    ip: '146.247.112.137', port: 51523, country: 'Нидерланды', countryCode: 'NL', type: 'SOCKS5', 
+    username: 'test24h', password: 'bGLKIBGlbU', 
+    ping: 45, status: 'online', lastChecked: Date.now(), serverLabel: 'Сервер #1' 
+  },
+  { 
+    ip: '45.10.156.42', port: 59100, country: 'Нидерланды', countryCode: 'NL', type: 'SOCKS5', 
+    username: 'admin0IA2s', password: 'dyLHVHsepX', 
+    ping: 48, status: 'online', lastChecked: Date.now(), serverLabel: 'Сервер #2' 
+  },
+  { 
+    ip: '45.10.156.26', port: 59101, country: 'Нидерланды', countryCode: 'NL', type: 'SOCKS5', 
+    username: 'andriymayik', password: '4YrrDIPLD2', 
+    ping: 42, status: 'online', lastChecked: Date.now(), serverLabel: 'Сервер #3' 
+  },
+  { 
+    ip: '91.242.229.96', port: 1080, country: 'Нидерланды', countryCode: 'NL', type: 'SOCKS5', 
+    ping: 55, status: 'online', lastChecked: Date.now(), serverLabel: 'Сервер #4' 
+  },
+  { 
+    ip: '5.255.117.127', port: 1080, country: 'Нидерланды', countryCode: 'NL', type: 'SOCKS5', 
+    ping: 52, status: 'online', lastChecked: Date.now(), serverLabel: 'Сервер #5' 
+  },
+  { 
+    ip: '146.19.254.101', port: 5555, country: 'Нидерланды', countryCode: 'NL', type: 'SOCKS5', 
+    ping: 50, status: 'online', lastChecked: Date.now(), serverLabel: 'Сервер #6' 
+  },
 
-  // Germany
-  { ip: '128.140.118.165', port: 1080, country: 'Германия', countryCode: 'DE', type: 'SOCKS5', ping: 48, status: 'online', lastChecked: Date.now() },
-  { ip: '193.233.254.8', port: 1080, country: 'Германия', countryCode: 'DE', type: 'SOCKS5', ping: 52, status: 'online', lastChecked: Date.now() },
+  // --- Germany (Low Ping) ---
+  { 
+    ip: '77.90.178.244', port: 51524, country: 'Германия', countryCode: 'DE', type: 'SOCKS5', 
+    username: 'test24h', password: 'bGLKIBGlbU', 
+    ping: 40, status: 'online', lastChecked: Date.now(), serverLabel: 'Сервер #1' 
+  },
+  { 
+    ip: '191.101.126.134', port: 50101, country: 'Германия', countryCode: 'DE', type: 'SOCKS5', 
+    username: 'friman98760pDEu', password: 'oW4vsSGZBY', 
+    ping: 42, status: 'online', lastChecked: Date.now(), serverLabel: 'Сервер #2' 
+  },
+  { 
+    ip: '31.59.236.245', port: 50101, country: 'Германия', countryCode: 'DE', type: 'SOCKS5', 
+    username: 'semanticforce', password: 'a3xCZwrGzG', 
+    ping: 38, status: 'online', lastChecked: Date.now(), serverLabel: 'Сервер #3' 
+  },
 
-  // Netherlands
-  { ip: '188.137.250.230', port: 1080, country: 'Нидерланды', countryCode: 'NL', type: 'SOCKS5', ping: 55, status: 'online', lastChecked: Date.now() },
-  { ip: '146.19.254.101', port: 5555, country: 'Нидерланды', countryCode: 'NL', type: 'SOCKS5', ping: 58, status: 'online', lastChecked: Date.now() },
-  { ip: '5.255.117.127', port: 1080, country: 'Нидерланды', countryCode: 'NL', type: 'SOCKS5', ping: 60, status: 'online', lastChecked: Date.now() },
-  { ip: '5.255.117.250', port: 1080, country: 'Нидерланды', countryCode: 'NL', type: 'SOCKS5', ping: 61, status: 'online', lastChecked: Date.now() },
-  { ip: '91.84.117.49', port: 10880, country: 'Нидерланды', countryCode: 'NL', type: 'SOCKS5', ping: 59, status: 'online', lastChecked: Date.now() },
-  { ip: '5.255.113.177', port: 1080, country: 'Нидерланды', countryCode: 'NL', type: 'SOCKS5', ping: 62, status: 'online', lastChecked: Date.now() },
+  // --- Finland (Low Ping) ---
+  { 
+    ip: '46.20.106.102', port: 1080, country: 'Финляндия', countryCode: 'FI', type: 'SOCKS5', 
+    ping: 30, status: 'online', lastChecked: Date.now(), serverLabel: 'Сервер #1' 
+  },
 
-  // UK
-  { ip: '45.140.147.82', port: 1081, country: 'Великобритания', countryCode: 'GB', type: 'SOCKS5', ping: 65, status: 'online', lastChecked: Date.now() },
+  // --- France (Low Ping) ---
+  { 
+    ip: '194.163.160.97', port: 10808, country: 'Франция', countryCode: 'FR', type: 'SOCKS5', 
+    ping: 50, status: 'online', lastChecked: Date.now(), serverLabel: 'Сервер #1' 
+  },
 
-  // France
-  { ip: '213.136.69.156', port: 1080, country: 'Франция', countryCode: 'FR', type: 'SOCKS5', ping: 50, status: 'online', lastChecked: Date.now() },
-  { ip: '194.163.160.97', port: 10808, country: 'Франция', countryCode: 'FR', type: 'SOCKS5', ping: 54, status: 'online', lastChecked: Date.now() },
-
-  // Moldova
-  { ip: '91.242.229.96', port: 1080, country: 'Молдова', countryCode: 'MD', type: 'SOCKS5', ping: 70, status: 'online', lastChecked: Date.now() },
-
-  // Canada
-  { ip: '188.227.196.62', port: 1080, country: 'Канада', countryCode: 'CA', type: 'SOCKS5', ping: 140, status: 'online', lastChecked: Date.now() },
-
-  // USA
-  { ip: '38.14.192.17', port: 1080, country: 'США', countryCode: 'US', type: 'SOCKS5', ping: 155, status: 'online', lastChecked: Date.now() },
-  { ip: '149.28.8.135', port: 1080, country: 'США', countryCode: 'US', type: 'SOCKS5', ping: 160, status: 'online', lastChecked: Date.now() },
-  { ip: '192.210.248.111', port: 50161, country: 'США', countryCode: 'US', type: 'SOCKS5', ping: 152, status: 'online', lastChecked: Date.now() },
-
-  // Argentina
-  { ip: '165.154.162.230', port: 1080, country: 'Аргентина', countryCode: 'AR', type: 'SOCKS5', ping: 310, status: 'online', lastChecked: Date.now() },
-  { ip: '186.137.21.165', port: 6881, country: 'Аргентина', countryCode: 'AR', type: 'SOCKS5', ping: 320, status: 'online', lastChecked: Date.now() },
-
-  // Hong Kong
-  { ip: '27.124.9.21', port: 5555, country: 'Гонконг', countryCode: 'HK', type: 'SOCKS5', ping: 250, status: 'online', lastChecked: Date.now() },
-  { ip: '27.124.9.8', port: 5555, country: 'Гонконг', countryCode: 'HK', type: 'SOCKS5', ping: 255, status: 'online', lastChecked: Date.now() },
-  { ip: '27.124.9.2', port: 5555, country: 'Гонконг', countryCode: 'HK', type: 'SOCKS5', ping: 245, status: 'online', lastChecked: Date.now() },
-  { ip: '85.121.244.176', port: 50161, country: 'Гонконг', countryCode: 'HK', type: 'SOCKS5', ping: 260, status: 'online', lastChecked: Date.now() },
-
-  // Vietnam
-  { ip: '58.187.104.67', port: 1090, country: 'Вьетнам', countryCode: 'VN', type: 'SOCKS5', ping: 280, status: 'online', lastChecked: Date.now() },
-
-  // Sweden (new)
-  { ip: '193.232.178.37', port: 1080, country: 'Швеция', countryCode: 'SE', type: 'SOCKS5', ping: 27, status: 'online', lastChecked: Date.now() },
-
-  // Ukraine
-  { ip: '91.199.45.79', port: 1080, country: 'Украина', countryCode: 'UA', type: 'SOCKS5', ping: 35, status: 'online', lastChecked: Date.now() },
-
-  // Finland (new)
-  { ip: '193.47.60.119', port: 52681, country: 'Финляндия', countryCode: 'FI', type: 'SOCKS5', ping: 30, status: 'online', lastChecked: Date.now() },
-
-  // Hong Kong (new)
-  { ip: '47.243.94.125', port: 1080, country: 'Гонконг', countryCode: 'HK', type: 'SOCKS5', ping: 248, status: 'online', lastChecked: Date.now() },
-
-  // Netherlands (new)
-  { ip: '91.84.117.49', port: 10880, country: 'Нидерланды', countryCode: 'NL', type: 'SOCKS5', ping: 56, status: 'online', lastChecked: Date.now() },
-
-  // Germany (new)
-  { ip: '193.233.254.8', port: 1080, country: 'Германия', countryCode: 'DE', type: 'SOCKS5', ping: 50, status: 'online', lastChecked: Date.now() },
-
-  // UK (new)
-  { ip: '45.140.147.82', port: 1081, country: 'Великобритания', countryCode: 'GB', type: 'SOCKS5', ping: 63, status: 'online', lastChecked: Date.now() },
-
-  // France (new)
-  { ip: '194.163.160.97', port: 10808, country: 'Франция', countryCode: 'FR', type: 'SOCKS5', ping: 52, status: 'online', lastChecked: Date.now() },
-
-  // USA (new)
-  { ip: '192.210.248.111', port: 50161, country: 'США', countryCode: 'US', type: 'SOCKS5', ping: 158, status: 'online', lastChecked: Date.now() },
-
-  // Argentina (new)
-  { ip: '186.137.21.165', port: 6881, country: 'Аргентина', countryCode: 'AR', type: 'SOCKS5', ping: 315, status: 'online', lastChecked: Date.now() },
+  // --- Argentina ---
+  { 
+    ip: '186.137.21.165', port: 6881, country: 'Аргентина', countryCode: 'AR', type: 'SOCKS5', 
+    ping: 280, status: 'online', lastChecked: Date.now(), serverLabel: 'Сервер #1' 
+  },
 ];
 
 const BYPASS_METHODS: BypassMethod[] = [
@@ -228,7 +205,12 @@ const getProxyLink = (p: ProxyServer) => {
   if (p.type === 'MTProto' && p.secret) {
     return `https://t.me/proxy?server=${p.ip}&port=${p.port}&secret=${p.secret}`;
   }
-  return `https://t.me/socks?server=${p.ip}&port=${p.port}`;
+  // SOCKS5
+  let link = `https://t.me/socks?server=${p.ip}&port=${p.port}`;
+  if (p.username && p.password) {
+    link += `&user=${p.username}&pass=${p.password}`;
+  }
+  return link;
 };
 
 const formatTimeAgo = (timestamp: number) => {
@@ -251,29 +233,6 @@ const deduplicateProxies = (proxies: ProxyServer[]) => {
 
 // --- Components ---
 
-const StatusBadge = ({ ping }: { ping: number }) => {
-  let colorClass = 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30';
-  let dotColor = 'bg-emerald-400';
-  
-  if (ping > 150 && ping <= 300) {
-    colorClass = 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30';
-    dotColor = 'bg-yellow-400';
-  } else if (ping > 300) {
-    colorClass = 'bg-red-500/20 text-red-400 border-red-500/30';
-    dotColor = 'bg-red-400';
-  }
-
-  return (
-    <div className={`flex items-center gap-1.5 px-2 py-0.5 rounded-full border text-xs font-medium ${colorClass}`}>
-      <span className={`relative flex h-2 w-2`}>
-        <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${dotColor}`}></span>
-        <span className={`relative inline-flex rounded-full h-2 w-2 ${dotColor}`}></span>
-      </span>
-      {ping} мс
-    </div>
-  );
-};
-
 const CopyButton = ({ text, className = "" }: { text: string, className?: string }) => {
   const [copied, setCopied] = useState(false);
 
@@ -295,7 +254,7 @@ const CopyButton = ({ text, className = "" }: { text: string, className?: string
         {copied ? <CheckCircle2 className="w-4 h-4 text-green-400" /> : <Copy className="w-4 h-4 text-slate-400 group-hover:text-white" />}
       </button>
       {copied && (
-        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1 bg-green-500 text-white text-xs font-bold rounded-full shadow-lg whitespace-nowrap animate-in fade-in slide-in-from-bottom-2">
+        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1 bg-green-500 text-white text-xs font-bold rounded-full shadow-lg whitespace-nowrap animate-in fade-in slide-in-from-bottom-2 z-50">
           Скопировано!
         </div>
       )}
@@ -315,7 +274,7 @@ const ProxyCard = ({ proxy, onReport, onCheck }: { proxy: ProxyServer, onReport:
   };
 
   return (
-    <div className="bg-slate-900/40 backdrop-blur-md border border-slate-700/50 rounded-xl p-4 flex flex-col gap-3 hover:border-slate-600 transition-all group relative overflow-hidden">
+    <div className="bg-slate-900/40 backdrop-blur-md border border-slate-700/50 rounded-xl p-4 flex flex-col gap-3 hover:border-slate-600 transition-all group relative overflow-visible">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <img 
@@ -325,10 +284,13 @@ const ProxyCard = ({ proxy, onReport, onCheck }: { proxy: ProxyServer, onReport:
           />
           <div>
             <div className="flex items-center gap-2">
-              <span className="font-medium text-white">{proxy.country}</span>
-              <span className="text-xs text-slate-400 bg-slate-800 px-1.5 py-0.5 rounded border border-slate-700">
-                {proxy.type}
-              </span>
+              <span className="font-medium text-white">{proxy.serverLabel || proxy.country}</span>
+              {proxy.username && (
+                 <span className="flex items-center gap-1 text-[10px] bg-yellow-500/10 text-yellow-400 border border-yellow-500/20 px-1.5 py-0.5 rounded uppercase font-bold tracking-wider">
+                   <Lock className="w-3 h-3" />
+                   Pass
+                 </span>
+              )}
             </div>
             <div className="text-xs text-slate-500 mt-0.5 flex items-center gap-1">
               <RefreshCw className={`w-3 h-3 ${isChecking ? 'animate-spin text-sky-400' : ''}`} />
@@ -336,7 +298,14 @@ const ProxyCard = ({ proxy, onReport, onCheck }: { proxy: ProxyServer, onReport:
             </div>
           </div>
         </div>
-        <StatusBadge ping={proxy.ping} />
+        {/* Only show 'Online' status, no ping numbers as requested */}
+        <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full border border-emerald-500/30 bg-emerald-500/20 text-emerald-400 text-xs font-medium">
+             <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400"></span>
+            </span>
+            В сети
+        </div>
       </div>
 
       <div className="flex items-center gap-2 mt-auto pt-2">
@@ -353,7 +322,7 @@ const ProxyCard = ({ proxy, onReport, onCheck }: { proxy: ProxyServer, onReport:
         <button 
           onClick={handleCheck}
           className={`p-2 rounded-lg transition-colors border ${isChecking ? 'bg-sky-500/20 text-sky-400 border-sky-500/50' : 'bg-slate-800/50 text-slate-400 border-slate-700/50 hover:bg-slate-700/50 hover:text-white'}`}
-          title="Проверить скорость"
+          title="Проверить"
           disabled={isChecking}
         >
           <RefreshCw className={`w-4 h-4 ${isChecking ? 'animate-spin' : ''}`} />
@@ -375,16 +344,15 @@ const CountryCard = ({
   countryCode, 
   countryName, 
   count, 
-  avgPing, 
   onClick 
 }: { 
   countryCode: string, 
   countryName: string, 
   count: number, 
-  avgPing: number, 
   onClick: () => void 
 }) => {
-  const isBestPing = ['SE', 'FI', 'NL'].includes(countryCode);
+  // Low ping badges for NL, DE, FI, FR as requested
+  const isBestPing = ['NL', 'DE', 'FI', 'FR'].includes(countryCode);
 
   return (
     <button 
@@ -413,10 +381,7 @@ const CountryCard = ({
         <div>
           <h3 className="font-bold text-white group-hover:text-sky-400 transition-colors">{countryName}</h3>
           <div className="flex items-center gap-2 text-xs text-slate-400">
-            <span className={`flex items-center gap-1 ${avgPing < 150 ? 'text-emerald-400' : 'text-slate-400'}`}>
-              <Wifi className="w-3 h-3" />
-              ~{Math.round(avgPing)} мс
-            </span>
+             <span className="text-slate-500">Доступно серверов: {count}</span>
           </div>
         </div>
       </div>
@@ -450,13 +415,10 @@ export function App() {
     
     setProxies(current => current.map(p => {
       if (p.ip === proxy.ip && p.port === proxy.port) {
-        // Minimal variance to show "live" check, but keep it stable/realistic
-        const variance = Math.floor(Math.random() * 11) - 5; // -5 to +5 ms
-        const newPing = Math.max(10, p.ping + variance);
         return {
           ...p,
           lastChecked: Date.now(),
-          ping: newPing
+          status: 'online'
         };
       }
       return p;
@@ -508,12 +470,10 @@ export function App() {
   const countries = Array.from(new Set(proxies.map(p => p.country))).sort();
   const countryStats = countries.map(c => {
     const pList = proxies.filter(p => p.country === c);
-    const avgPing = pList.reduce((acc, curr) => acc + curr.ping, 0) / pList.length;
     return {
       name: c,
       code: pList[0].countryCode,
-      count: pList.length,
-      avgPing
+      count: pList.length
     };
   });
 
@@ -656,7 +616,6 @@ export function App() {
             <div className="text-sm font-medium text-slate-400 bg-slate-900/50 px-3 py-1 rounded-full border border-slate-800">
               Обновлено: <span className="text-sky-300">12.02.2026</span>
             </div>
-            {/* Connection button removed */}
           </div>
         </header>
 
@@ -818,7 +777,6 @@ export function App() {
                   countryCode={c.code}
                   countryName={c.name}
                   count={c.count}
-                  avgPing={c.avgPing}
                   onClick={() => setSelectedCountry(c.name)}
                 />
               ))}
