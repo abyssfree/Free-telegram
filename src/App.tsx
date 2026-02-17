@@ -255,8 +255,8 @@ const rawProxies: Omit<ProxyItem, 'id' | 'status' | 'lastChecked'>[] = [
   // France
   { country: 'Франция', flag: '🇫🇷', ip: '194.163.160.97', port: 10808, type: 'socks5', lowPing: true, hasAuth: false },
   // UK
-  { country: 'Великобритания', flag: '🇬🇧', ip: '81.168.120.134', port: 50101, user: 'yuriilp4p', pass: 'TxWga7PsNX', type: 'socks5', lowPing: false, hasAuth: true },
-  { country: 'Великобритания', flag: '🇬🇧', ip: '45.66.95.79', port: 5010, user: 'yuriilp4p', pass: 'TxWga7PsNX', type: 'socks5', lowPing: false, hasAuth: true },
+  { country: 'Великобритания', flag: '🇬🇧', ip: '81.168.120.134', port: 50101, user: 'yuriilp4p', pass: 'TxWga7PsNX', type: 'socks5', lowPing: true, hasAuth: true },
+  { country: 'Великобритания', flag: '🇬🇧', ip: '45.66.95.79', port: 5010, user: 'yuriilp4p', pass: 'TxWga7PsNX', type: 'socks5', lowPing: true, hasAuth: true },
 ];
 
 // Country name translations
@@ -572,7 +572,7 @@ export default function App() {
               </div>
             </div>
             <div className="flex items-center gap-4">
-              <span className="text-xs text-slate-500 hidden sm:block">{t.updated} 16.02.2026</span>
+              <span className="text-xs text-slate-500 hidden sm:block">{t.updated} 17.02.2026</span>
               {/* Language Switcher */}
               <div className="relative">
                 <button
