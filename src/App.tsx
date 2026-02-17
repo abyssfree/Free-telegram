@@ -244,27 +244,28 @@ interface ProxyItem {
 }
 
 const rawProxies: Omit<ProxyItem, 'id' | 'status' | 'lastChecked'>[] = [
-  // Argentina (Sorted by Alphabet)
+  // Argentina
   { country: 'Аргентина', flag: '🇦🇷', ip: '186.137.21.165', port: 6881, type: 'socks5', lowPing: false, hasAuth: false },
   // Germany
   { country: 'Германия', flag: '🇩🇪', ip: '77.90.178.244', port: 51524, user: 'test24h', pass: 'bGLKIBGlbU', type: 'socks5', lowPing: true, hasAuth: true },
   { country: 'Германия', flag: '🇩🇪', ip: '191.101.126.134', port: 50101, user: 'friman98760pDEu', pass: 'oW4vsSGZBY', type: 'socks5', lowPing: true, hasAuth: true },
   { country: 'Германия', flag: '🇩🇪', ip: '31.59.236.245', port: 50101, user: 'semanticforce', pass: 'a3xCZwrGzG', type: 'socks5', lowPing: true, hasAuth: true },
-  // Netherlands (Removed servers 2 and 3, remaining is the old #1 which was 45.10...)
-  { country: 'Нидерланды', flag: '🇳🇱', ip: '45.10.156.26', port: 59101, user: 'andriymayik', pass: '4YrrDIPLD2', type: 'socks5', lowPing: true, hasAuth: true },
-  // Finland
-  { country: 'Финляндия', flag: '🇫🇮', ip: '46.20.106.102', port: 1080, type: 'socks5', lowPing: true, hasAuth: false },
+  // Netherlands
+  { country: 'Нидерланды', flag: '🇳🇱', ip: '45.153.163.50', port: 50101, user: 'astap01', pass: '5YBoMtNUoi', type: 'socks5', lowPing: true, hasAuth: true },
   // France
   { country: 'Франция', flag: '🇫🇷', ip: '194.163.160.97', port: 10808, type: 'socks5', lowPing: true, hasAuth: false },
+  // UK
+  { country: 'Великобритания', flag: '🇬🇧', ip: '81.168.120.134', port: 50101, user: 'yuriilp4p', pass: 'TxWga7PsNX', type: 'socks5', lowPing: false, hasAuth: true },
+  { country: 'Великобритания', flag: '🇬🇧', ip: '45.66.95.79', port: 5010, user: 'yuriilp4p', pass: 'TxWga7PsNX', type: 'socks5', lowPing: false, hasAuth: true },
 ];
 
 // Country name translations
 const countryNames: Record<string, string> = {
   'Нидерланды': 'Netherlands',
   'Германия': 'Germany',
-  'Финляндия': 'Finland',
   'Франция': 'France',
   'Аргентина': 'Argentina',
+  'Великобритания': 'United Kingdom',
 };
 
 function deduplicateProxies(proxies: typeof rawProxies) {
@@ -1132,6 +1133,13 @@ export default function App() {
         .animate-stars-move-slow { animation: stars-move-slow 120s linear infinite; }
         .animate-stars-move-medium { animation: stars-move-medium 80s linear infinite; }
         .animate-stars-move-fast { animation: stars-move-fast 40s linear infinite; }
+
+        body {
+          cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="%2324A1DE" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-send"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>'), auto;
+        }
+        a, button, [role="button"] {
+          cursor: pointer;
+        }
       `}</style>
     </div>
   );
