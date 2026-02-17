@@ -568,7 +568,6 @@ export default function App() {
               </div>
               <div>
                 <h1 className="text-xl font-bold bg-gradient-to-r from-white to-blue-200 bg-clip-text text-transparent">FreeTG</h1>
-                <p className="text-xs text-slate-400">{t.subtitle}</p>
               </div>
             </div>
             <div className="flex items-center gap-4">
