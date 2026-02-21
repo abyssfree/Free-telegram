@@ -256,13 +256,28 @@ interface ProxyItem {
 const rawProxies: Omit<ProxyItem, 'id' | 'status' | 'lastChecked'>[] = [
   // Argentina
   { country: 'Аргентина', flag: '🇦🇷', ip: '186.137.21.165', port: 6881, type: 'socks5', lowPing: false, hasAuth: false },
+
   // Germany
   { country: 'Германия', flag: '🇩🇪', ip: '77.90.178.244', port: 51524, user: 'test24h', pass: 'bGLKIBGlbU', type: 'socks5', lowPing: true, hasAuth: true },
   { country: 'Германия', flag: '🇩🇪', ip: '31.59.236.245', port: 50101, user: 'semanticforce', pass: 'a3xCZwrGzG', type: 'socks5', lowPing: true, hasAuth: true },
+  { country: 'Германия', flag: '🇩🇪', ip: '152.53.161.111', port: 58367, type: 'socks5', lowPing: true, hasAuth: false },
+
+  // Latvia (min ping)
+  { country: 'Латвия', flag: '🇱🇻', ip: '213.21.233.242', port: 1080, type: 'socks5', lowPing: true, hasAuth: false },
+
   // Netherlands
   { country: 'Нидерланды', flag: '🇳🇱', ip: '45.153.163.50', port: 50101, user: 'astap01', pass: '5YBoMtNUoi', type: 'socks5', lowPing: true, hasAuth: true },
+  { country: 'Нидерланды', flag: '🇳🇱', ip: '185.244.49.248', port: 1080, type: 'socks5', lowPing: true, hasAuth: false },
+  { country: 'Нидерланды', flag: '🇳🇱', ip: '5.255.117.250', port: 1080, type: 'socks5', lowPing: true, hasAuth: false },
+  { country: 'Нидерланды', flag: '🇳🇱', ip: '5.255.117.127', port: 1080, type: 'socks5', lowPing: true, hasAuth: false },
+
+  // USA
+  { country: 'США', flag: '🇺🇸', ip: '104.168.88.225', port: 1080, type: 'socks5', lowPing: false, hasAuth: false },
+  { country: 'США', flag: '🇺🇸', ip: '104.168.88.225', port: 1080, type: 'socks5', lowPing: false, hasAuth: false },
+
   // France
   { country: 'Франция', flag: '🇫🇷', ip: '194.163.160.97', port: 10808, type: 'socks5', lowPing: false, hasAuth: false },
+
   // UK
   { country: 'Великобритания', flag: '🇬🇧', ip: '81.168.120.134', port: 50101, user: 'yuriilp4p', pass: 'TxWga7PsNX', type: 'socks5', lowPing: true, hasAuth: true },
 ];
@@ -274,6 +289,8 @@ const countryNames: Record<string, string> = {
   'Франция': 'France',
   'Аргентина': 'Argentina',
   'Великобритания': 'United Kingdom',
+  'Латвия': 'Latvia',
+  'США': 'United States',
 };
 
 function deduplicateProxies(proxies: typeof rawProxies) {
