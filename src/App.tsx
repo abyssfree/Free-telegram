@@ -73,7 +73,7 @@ const translations = {
     censorBtn: 'Подробнее',
     // Proxy section
     proxyServersTitle: 'Рабочие прокси-серверы',
-    proxyNotice: 'Все прокси бесплатны и могут показывать спонсорский канал в списке чатов.',
+    proxyNotice: '',
     lowPing: 'Мин. пинг',
     servers: 'серверов',
     server: 'Сервер',
@@ -182,7 +182,7 @@ const translations = {
     censorText: 'Try the Censor Tracker browser extension.',
     censorBtn: 'Learn more',
     proxyServersTitle: 'Working Proxy Servers',
-    proxyNotice: 'All proxies are free and may show a sponsor channel in your chat list.',
+    proxyNotice: '',
     lowPing: 'Low ping',
     servers: 'servers',
     server: 'Server',
@@ -932,7 +932,9 @@ export default function App() {
                 {t.proxyServersTitle}
               </h3>
             </div>
-            <p className="text-xs text-slate-500 mb-6">{t.proxyNotice}</p>
+            {t.proxyNotice ? (
+              <p className="text-xs text-slate-500 mb-6">{t.proxyNotice}</p>
+            ) : null}
 
             {!selectedCountry ? (
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
