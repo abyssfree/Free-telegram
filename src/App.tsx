@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import {
   Send, Shield, Globe, Zap, Monitor, AlertTriangle, ChevronDown,
   ChevronRight, ExternalLink, Copy, Check, RefreshCw, Lock,
@@ -66,8 +66,8 @@ const translations = {
     dnsCons: ['Помогает не при всех типах блокировок', 'Требует ручной настройки', 'Нужно знать правильный адрес'],
     webWhatIs: 'Telegram Web — это официальная браузерная версия мессенджера, доступная по адресу web.telegram.org. Работает через HTTPS и может быть доступна, даже когда приложение замедлено.',
     webHowTo: ['Откройте браузер', 'Перейдите на web.telegram.org', 'Войдите по номеру телефона', 'Используйте Telegram прямо в браузере'],
-    webPros: ['No installation needed', 'Works in any browser', 'Instant access', 'Official solution'],
-    webCons: ['Limited functionality', 'No calls', 'Browser-dependent', 'May also be throttled'],
+    webPros: ['Не требует установки', 'Работает в любом браузере', 'Быстрый доступ', 'Официальное решение'],
+    webCons: ['Ограниченная функциональность', 'Нет звонков', 'Зависит от браузера', 'Может также замедляться провайдером'],
     censorTitle: 'Ничего не помогает?',
     censorText: 'Попробуйте расширение Censor Tracker для браузера.',
     censorBtn: 'Подробнее',
@@ -270,10 +270,18 @@ const rawProxies: Omit<ProxyItem, 'id' | 'status' | 'lastChecked'>[] = [
   { country: 'Нидерланды', flag: '🇳🇱', ip: '185.244.49.248', port: 1080, type: 'socks5', lowPing: true, hasAuth: false },
   { country: 'Нидерланды', flag: '🇳🇱', ip: '5.255.117.250', port: 1080, type: 'socks5', lowPing: true, hasAuth: false },
   { country: 'Нидерланды', flag: '🇳🇱', ip: '5.255.117.127', port: 1080, type: 'socks5', lowPing: true, hasAuth: false },
+  { country: 'Нидерланды', flag: '🇳🇱', ip: '194.87.221.78', port: 1080, type: 'socks5', lowPing: true, hasAuth: false },
+
+  // Germany
+  { country: 'Германия', flag: '🇩🇪', ip: '91.107.244.226', port: 50161, type: 'socks5', lowPing: true, hasAuth: false },
 
   // USA
   { country: 'США', flag: '🇺🇸', ip: '104.168.88.225', port: 1080, type: 'socks5', lowPing: false, hasAuth: false },
   { country: 'США', flag: '🇺🇸', ip: '104.168.88.225', port: 1080, type: 'socks5', lowPing: false, hasAuth: false },
+  { country: 'США', flag: '🇺🇸', ip: '216.126.234.4', port: 50161, type: 'socks5', lowPing: false, hasAuth: false },
+
+  // Singapore
+  { country: 'Сингапур', flag: '🇸🇬', ip: '206.206.126.140', port: 1080, type: 'socks5', lowPing: false, hasAuth: false },
 
   // France
   { country: 'Франция', flag: '🇫🇷', ip: '194.163.160.97', port: 10808, type: 'socks5', lowPing: false, hasAuth: false },
@@ -291,6 +299,7 @@ const countryNames: Record<string, string> = {
   'Великобритания': 'United Kingdom',
   'Латвия': 'Latvia',
   'США': 'United States',
+  'Сингапур': 'Singapore',
 };
 
 function deduplicateProxies(proxies: typeof rawProxies) {
@@ -334,10 +343,34 @@ const dnsServers = [
 // ==================== APP ====================
 export default function App() {
   const [lang, setLang] = useState<Lang>('ru');
+  
   const [showLangMenu, setShowLangMenu] = useState(false);
   const t = translations[lang];
 
+  // Star positions (memoized to avoid re-randomization on every rerender)
+  const stars = useMemo(() => {
+    const make = (count: number, maxSize: number, opacity: number) =>
+      Array.from({ length: count }).map(() => ({
+        size: Math.random() * maxSize + 1,
+        top: Math.random() * 100,
+        left: Math.random() * 100,
+        opacity,
+        twinkleDelay: Math.random() * 6,
+        twinkleDur: 3 + Math.random() * 5,
+      }));
+
+    return {
+      l1: make(30, 2, 0.25),
+      l2: make(20, 3, 0.45),
+      l3: make(15, 4, 0.7),
+    };
+  }, []);
+
+
+
   const getCountryName = (ruName: string) => lang === 'en' ? (countryNames[ruName] || ruName) : ruName;
+
+  // Cursor trail removed
 
   // Connection test
   const [testRunning, setTestRunning] = useState(false);
@@ -610,43 +643,52 @@ export default function App() {
 
         {/* Moving Stars Layers */}
         <div className="stars-layer-1 absolute inset-0 animate-stars-move-slow">
-          {Array.from({ length: 30 }).map((_, i) => (
+          {stars.l1.map((s, i) => (
             <div
               key={`l1-${i}`}
-              className="absolute rounded-full bg-white/20"
+              className="absolute rounded-full bg-white/20 animate-star-twinkle"
               style={{
-                width: Math.random() * 2 + 1 + 'px',
-                height: Math.random() * 2 + 1 + 'px',
-                top: Math.random() * 100 + '%',
-                left: Math.random() * 100 + '%',
+                width: `${s.size}px`,
+                height: `${s.size}px`,
+                top: `${s.top}%`,
+                left: `${s.left}%`,
+                opacity: s.opacity,
+                animationDelay: `${s.twinkleDelay}s`,
+                animationDuration: `${s.twinkleDur}s`,
               }}
             />
           ))}
         </div>
         <div className="stars-layer-2 absolute inset-0 animate-stars-move-medium">
-          {Array.from({ length: 20 }).map((_, i) => (
+          {stars.l2.map((s, i) => (
             <div
               key={`l2-${i}`}
-              className="absolute rounded-full bg-white/40"
+              className="absolute rounded-full bg-white/40 animate-star-twinkle"
               style={{
-                width: Math.random() * 3 + 1 + 'px',
-                height: Math.random() * 3 + 1 + 'px',
-                top: Math.random() * 100 + '%',
-                left: Math.random() * 100 + '%',
+                width: `${s.size}px`,
+                height: `${s.size}px`,
+                top: `${s.top}%`,
+                left: `${s.left}%`,
+                opacity: s.opacity,
+                animationDelay: `${s.twinkleDelay}s`,
+                animationDuration: `${s.twinkleDur}s`,
               }}
             />
           ))}
         </div>
         <div className="stars-layer-3 absolute inset-0 animate-stars-move-fast">
-          {Array.from({ length: 15 }).map((_, i) => (
+          {stars.l3.map((s, i) => (
             <div
               key={`l3-${i}`}
-              className="absolute rounded-full bg-white/60"
+              className="absolute rounded-full bg-white/60 animate-star-twinkle"
               style={{
-                width: Math.random() * 4 + 1 + 'px',
-                height: Math.random() * 4 + 1 + 'px',
-                top: Math.random() * 100 + '%',
-                left: Math.random() * 100 + '%',
+                width: `${s.size}px`,
+                height: `${s.size}px`,
+                top: `${s.top}%`,
+                left: `${s.left}%`,
+                opacity: s.opacity,
+                animationDelay: `${s.twinkleDelay}s`,
+                animationDuration: `${s.twinkleDur}s`,
               }}
             />
           ))}
@@ -660,6 +702,8 @@ export default function App() {
           <span className="font-medium">{toast}</span>
         </div>
       )}
+
+
 
       <div className="relative z-10">
         {/* Header */}
@@ -1241,16 +1285,24 @@ export default function App() {
           0% { transform: translateY(0); }
           100% { transform: translateY(-100%); }
         }
+        @keyframes star-twinkle {
+          0%, 100% { opacity: 0.35; transform: scale(1); }
+          50% { opacity: 1; transform: scale(1.35); }
+        }
         .animate-bounce-in { animation: bounce-in 0.4s ease-out forwards; }
-        .animate-stars-move-slow { animation: stars-move-slow 120s linear infinite; }
-        .animate-stars-move-medium { animation: stars-move-medium 80s linear infinite; }
-        .animate-stars-move-fast { animation: stars-move-fast 40s linear infinite; }
+        .animate-stars-move-slow { animation: stars-move-slow 120s linear infinite; will-change: transform; }
+        .animate-stars-move-medium { animation: stars-move-medium 80s linear infinite; will-change: transform; }
+        .animate-stars-move-fast { animation: stars-move-fast 40s linear infinite; will-change: transform; }
+        .animate-star-twinkle { animation-name: star-twinkle; animation-timing-function: ease-in-out; animation-iteration-count: infinite; will-change: opacity, transform; }
 
         body {
           cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="%2324A1DE" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-send"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>'), auto;
         }
         a, button, [role="button"] {
           cursor: pointer;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .animate-stars-move-slow, .animate-stars-move-medium, .animate-stars-move-fast, .animate-star-twinkle { animation: none !important; }
         }
       `}</style>
     </div>
