@@ -254,40 +254,28 @@ interface ProxyItem {
 }
 
 const rawProxies: Omit<ProxyItem, 'id' | 'status' | 'lastChecked'>[] = [
-  // Argentina
-  { country: 'Аргентина', flag: '🇦🇷', ip: '186.137.21.165', port: 6881, type: 'socks5', lowPing: false, hasAuth: false },
-
-  // Germany
+  // Germany (Low ping)
   { country: 'Германия', flag: '🇩🇪', ip: '77.90.178.244', port: 51524, user: 'test24h', pass: 'bGLKIBGlbU', type: 'socks5', lowPing: true, hasAuth: true },
   { country: 'Германия', flag: '🇩🇪', ip: '31.59.236.245', port: 50101, user: 'semanticforce', pass: 'a3xCZwrGzG', type: 'socks5', lowPing: true, hasAuth: true },
-  { country: 'Германия', flag: '🇩🇪', ip: '152.53.161.111', port: 58367, type: 'socks5', lowPing: true, hasAuth: false },
 
-  // Latvia (min ping)
-  { country: 'Латвия', flag: '🇱🇻', ip: '213.21.233.242', port: 1080, type: 'socks5', lowPing: true, hasAuth: false },
-
-  // Netherlands
+  // Netherlands (Low ping)
   { country: 'Нидерланды', flag: '🇳🇱', ip: '45.153.163.50', port: 50101, user: 'astap01', pass: '5YBoMtNUoi', type: 'socks5', lowPing: true, hasAuth: true },
   { country: 'Нидерланды', flag: '🇳🇱', ip: '185.244.49.248', port: 1080, type: 'socks5', lowPing: true, hasAuth: false },
-  { country: 'Нидерланды', flag: '🇳🇱', ip: '5.255.117.250', port: 1080, type: 'socks5', lowPing: true, hasAuth: false },
-  { country: 'Нидерланды', flag: '🇳🇱', ip: '5.255.117.127', port: 1080, type: 'socks5', lowPing: true, hasAuth: false },
-  { country: 'Нидерланды', flag: '🇳🇱', ip: '194.87.221.78', port: 1080, type: 'socks5', lowPing: true, hasAuth: false },
 
-  // Germany
-  { country: 'Германия', flag: '🇩🇪', ip: '91.107.244.226', port: 50161, type: 'socks5', lowPing: true, hasAuth: false },
+  // United Kingdom (Low ping)
+  { country: 'Великобритания', flag: '🇬🇧', ip: '62.84.168.12', port: 50101, user: 'best96248', pass: 'suWM4swamT', type: 'socks5', lowPing: true, hasAuth: true },
+  { country: 'Великобритания', flag: '🇬🇧', ip: '62.84.170.230', port: 50101, user: 'best96248', pass: 'suWM4swamT', type: 'socks5', lowPing: true, hasAuth: true },
 
   // USA
-  { country: 'США', flag: '🇺🇸', ip: '104.168.88.225', port: 1080, type: 'socks5', lowPing: false, hasAuth: false },
-  { country: 'США', flag: '🇺🇸', ip: '104.168.88.225', port: 1080, type: 'socks5', lowPing: false, hasAuth: false },
-  { country: 'США', flag: '🇺🇸', ip: '216.126.234.4', port: 50161, type: 'socks5', lowPing: false, hasAuth: false },
+  { country: 'США', flag: '🇺🇸', ip: '150.241.251.148', port: 50101, user: '21pandemonium21', pass: 'Q8pqRpKAmb', type: 'socks5', lowPing: false, hasAuth: true },
 
-  // Singapore
-  { country: 'Сингапур', flag: '🇸🇬', ip: '206.206.126.140', port: 1080, type: 'socks5', lowPing: false, hasAuth: false },
+  // Kazakhstan
+  { country: 'Казахстан', flag: '🇰🇿', ip: '91.147.127.155', port: 50101, user: 'igrobollol', pass: 'YHXf8GmyxT', type: 'socks5', lowPing: false, hasAuth: true },
 
-  // France
-  { country: 'Франция', flag: '🇫🇷', ip: '194.163.160.97', port: 10808, type: 'socks5', lowPing: false, hasAuth: false },
-
-  // UK
-  { country: 'Великобритания', flag: '🇬🇧', ip: '81.168.120.134', port: 50101, user: 'yuriilp4p', pass: 'TxWga7PsNX', type: 'socks5', lowPing: true, hasAuth: true },
+  // Russia
+  { country: 'Россия', flag: '🇷🇺', ip: '109.248.204.45', port: 5500, user: '6NeZMV', pass: 'iSxcP9mEj0', type: 'socks5', lowPing: true, hasAuth: true },
+  { country: 'Россия', flag: '🇷🇺', ip: '31.40.203.213', port: 5500, user: '6NeZMV', pass: 'iSxcP9mEj0', type: 'socks5', lowPing: true, hasAuth: true },
+  { country: 'Россия', flag: '🇷🇺', ip: '46.8.107.115', port: 5500, user: '6NeZMV', pass: 'iSxcP9mEj0', type: 'socks5', lowPing: true, hasAuth: true },
 ];
 
 // Country name translations
@@ -300,6 +288,8 @@ const countryNames: Record<string, string> = {
   'Латвия': 'Latvia',
   'США': 'United States',
   'Сингапур': 'Singapore',
+  'Казахстан': 'Kazakhstan',
+  'Россия': 'Russia',
 };
 
 function deduplicateProxies(proxies: typeof rawProxies) {
@@ -718,7 +708,7 @@ export default function App() {
               </div>
             </div>
             <div className="flex items-center gap-4">
-              <span className="text-xs text-slate-500 hidden sm:block">{t.updated} 21.02.2026</span>
+              <span className="text-xs text-slate-500 hidden sm:block">{t.updated} 25.02.2026</span>
               {/* Language Switcher */}
               <div className="relative">
                 <button
