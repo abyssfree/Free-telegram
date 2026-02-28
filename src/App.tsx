@@ -260,11 +260,6 @@ const rawProxies: Omit<ProxyItem, 'id' | 'status' | 'lastChecked'>[] = [
 
   // Netherlands (Low ping)
   { country: 'Нидерланды', flag: '🇳🇱', ip: '45.153.163.50', port: 50101, user: 'astap01', pass: '5YBoMtNUoi', type: 'socks5', lowPing: true, hasAuth: true },
-  { country: 'Нидерланды', flag: '🇳🇱', ip: '185.244.49.248', port: 1080, type: 'socks5', lowPing: true, hasAuth: false },
-
-  // United Kingdom (Low ping)
-  { country: 'Великобритания', flag: '🇬🇧', ip: '62.84.168.12', port: 50101, user: 'best96248', pass: 'suWM4swamT', type: 'socks5', lowPing: true, hasAuth: true },
-  { country: 'Великобритания', flag: '🇬🇧', ip: '62.84.170.230', port: 50101, user: 'best96248', pass: 'suWM4swamT', type: 'socks5', lowPing: true, hasAuth: true },
 
   // USA
   { country: 'США', flag: '🇺🇸', ip: '150.241.251.148', port: 50101, user: '21pandemonium21', pass: 'Q8pqRpKAmb', type: 'socks5', lowPing: false, hasAuth: true },
@@ -272,10 +267,8 @@ const rawProxies: Omit<ProxyItem, 'id' | 'status' | 'lastChecked'>[] = [
   // Kazakhstan
   { country: 'Казахстан', flag: '🇰🇿', ip: '91.147.127.155', port: 50101, user: 'igrobollol', pass: 'YHXf8GmyxT', type: 'socks5', lowPing: false, hasAuth: true },
 
-  // Russia
-  { country: 'Россия', flag: '🇷🇺', ip: '109.248.204.45', port: 5500, user: '6NeZMV', pass: 'iSxcP9mEj0', type: 'socks5', lowPing: true, hasAuth: true },
-  { country: 'Россия', flag: '🇷🇺', ip: '31.40.203.213', port: 5500, user: '6NeZMV', pass: 'iSxcP9mEj0', type: 'socks5', lowPing: true, hasAuth: true },
-  { country: 'Россия', flag: '🇷🇺', ip: '46.8.107.115', port: 5500, user: '6NeZMV', pass: 'iSxcP9mEj0', type: 'socks5', lowPing: true, hasAuth: true },
+
+
 ];
 
 // Country name translations
@@ -708,7 +701,7 @@ export default function App() {
               </div>
             </div>
             <div className="flex items-center gap-4">
-              <span className="text-xs text-slate-500 hidden sm:block">{t.updated} 25.02.2026</span>
+              <span className="text-xs text-slate-500 hidden sm:block">{t.updated} 28.02.2026</span>
               {/* Language Switcher */}
               <div className="relative">
                 <button
